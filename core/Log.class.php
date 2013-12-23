@@ -70,7 +70,7 @@ class Log
 	 */
 	static public function customLog($filename, $msg, $priority = '')
 	{
-		$log_obj = LOG::getInstance();
+		$log_obj = Log::getInstance();
 		$string = "" ;
 		$string .= "/*********************** ".$priority." ".date('Y-m-d H:i:s')." ***********************/\n";
 		$string .= $msg;
