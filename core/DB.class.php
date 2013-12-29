@@ -209,7 +209,8 @@ class DB
 		$sql = "INSERT INTO ".$table_name." SET " ;
 		foreach ($info as $k => $v)
 		{
-			$sql .= '`'.$k . "` = '" . $v . "',";
+			if($addslashes)$sql .= '`'.$k . "` = '" . addslashes($v) . "',";
+			else $sql .= '`'.$k . "` = '" . $v . "',";
 		}
 		$sql = substr($sql, 0, -1);
 		return $this->query($sql);
