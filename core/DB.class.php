@@ -200,10 +200,11 @@ class DB
 	 * @desc 插入一条记录
 	 * @param string $table_name 数据表名
 	 * @param array $info 需要插入的字段和值的数组
+	 * @param bool $addslashes 是否进行addslashes处理
 	 * @return bool
 	 * @access public
 	 */
-	public function insert($table_name, $info)
+	public function insert($table_name, $info , $addslashes = false)
 	{
 		$sql = "INSERT INTO ".$table_name." SET " ;
 		foreach ($info as $k => $v)
