@@ -267,7 +267,7 @@ class DB
 		$begin_microtime = Debug::getTime();
 		if($creteria){
 			$where = self::_buildQuery($creteria, $trim, $strict);
-			$sql = str_replace('%_creteria_%', $where);
+			$sql = str_replace('%_creteria_%', $where, $sql);
 		}
 		if(!$this->statement = $this->db->query($sql)){
 			$this->err($sql);
