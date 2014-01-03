@@ -265,20 +265,15 @@ class DB
 	public function fetchOne($sql, $creteria = false, $trim = true, $strict = false)
 	{
 		$begin_microtime = Debug::getTime();
-		try 
-		{
-			if($creteria){
-				$where = self::_buildQuery($creteria, $trim, $strict);
-				$sql = str_replace('%_creteria_%', $where);
-			}
-			$this->statement = $this->db->query($sql);
-			$info = $this->statement->fetch(PDO::FETCH_ASSOC);
+		if($creteria){
+			$where = self::_buildQuery($creteria, $trim, $strict);
+			$sql = str_replace('%_creteria_%', $where);
 		}
-		catch (Exception $e)
-		{
-			$this->halt($e, $sql);
+		if(!$this->statement = $this->db->query($sql)){
+			$this->err($sql);
 			return false;
 		}
+		$info = $this->statement->fetch(PDO::FETCH_ASSOC);
 		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $info);
 		return $info;
 	}
