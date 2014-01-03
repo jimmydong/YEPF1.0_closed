@@ -18,6 +18,7 @@ if(!defined('YOKA')) exit('Illegal Request');
 
 class DB
 {
+	const debug = false;
 	/**
 	 * @desc 数据库访问对象
 	 * @var obj
@@ -386,12 +387,12 @@ class DB
 	 * @param boolean $strict 是否严格检查（非严格检查时，可省略$符）
 	 **/
 	public static function _buildQuery($creteria , $trim = true, $strict = false, $connector = 'AND', $addslashes = false){
-		\Debug::log('_buildQuery', $creteria);
+		if(self::debug)\Debug::log('_buildQuery', $creteria);
         if(!is_array($creteria)){\Debug::log("_buildWhere Error", $creteria);return false;}
 		$re = array();
 		foreach ($creteria as $k => $v){
             if($trim){$k = trim($k);}
-            	\Debug::log("_buildQuery: $k", $v);
+            	if(self::debug)\Debug::log("_buildQuery: $k", $v);
             if(is_array($v)){
 
             	//符合条件，递归实现
@@ -402,7 +403,7 @@ class DB
                 }else{
 	                //以下为单一条件
 	                $k2=key($v);$v2=$v[$k2];
-	                \Debug::log($k2,$v2);
+	                if(self::debug)\Debug::log($k2,$v2);
 	                if($addslashes) $v2 = addslashes($v2);
 	                if(strtolower($k2) === '$like' || ($strict == false && strtolower($k2) === 'like')){
 						$re[] = self::_buildCol($k) . " LIKE '$v2' "; 
@@ -425,9 +426,10 @@ class DB
                 if($addslashes) $re[] = self::_buildCol($k) . " = '" .addslashes($v). "' "; 
                 else $re[] = self::_buildCol($k) . " = '$v' ";
           	}
-          	\Debug::log("_buildQuery: re", $re);
+          	if(self::debug)\Debug::log("_buildQuery: re", $re);
 		}
 		$result = implode($connector, $re);
+	  	if(self::debug)\Debug::log("_buildQuery: result", $result);
 		return $result;
 	}
 	public static function _buildCol($col){
