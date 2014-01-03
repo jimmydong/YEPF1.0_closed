@@ -295,11 +295,10 @@ class DB
 			$where = self::_buildQuery($creteria, $trim, $strict);
 			$sql = str_replace('%_creteria_%', $where, $sql);
 		}
-		if(! $flag =  $this->statement = $this->db->query($sql)){
+		if(! $this->statement = $this->db->query($sql)){
 			$this->err($sql);
 			return false;
 		}
-		\Debug::log($this->statment , $flag);
 		$info = $this->statement->fetchAll(PDO::FETCH_ASSOC);
 		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $info);
 		return $info;
