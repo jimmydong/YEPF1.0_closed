@@ -376,7 +376,7 @@ class DB
 
 	/**
 	 * @name _buildQuery
-	 * @desc 构造where条件
+	 * @desc 构造where条件。【缺陷】不能处理内联条件，比如： goods.id = goods.parentid 会被当做 goods.id = 'goods.parentid' !!!
 	 * @desc demo: 
 	 * @desc $creteria = array('del_flag'=>1)  //单一条件
 	 * @desc $creteria = array('del_flag'=>1, 'age'=>array('$lt',20)) //多条件默认用and连接
@@ -385,7 +385,7 @@ class DB
 	 * @param boolean $trim 自动去除空白
 	 * @param boolean $strict 是否严格检查（非严格检查时，可省略$符）
 	 **/
-	public function _buildQuery($creteria , $trim = true, $strict = false, $connector = 'AND', $addslashes = false){
+	public static function _buildQuery($creteria , $trim = true, $strict = false, $connector = 'AND', $addslashes = false){
 		\Debug::log('_buildQuery', $creteria);
         if(!is_array($creteria)){\Debug::log("_buildWhere Error", $creteria);return false;}
 		$re = array();
@@ -405,30 +405,38 @@ class DB
 	                \Debug::log($k2,$v2);
 	                if($addslashes) $v2 = addslashes($v2);
 	                if(strtolower($k2) === '$like' || ($strict == false && strtolower($k2) === 'like')){
-						$re[] = " `$k` LIKE '$v2' "; 
+						$re[] = self::_buildCol($k) . " LIKE '$v2' "; 
 	                }elseif(strtolower($k2) === '$gt' || ($strict == false && strtolower($k2) === 'gt')){
-						$re[] = " `$k` > '$v2' "; 
+						$re[] = self::_buildCol($k) . " > '$v2' "; 
 	                }elseif(strtolower($k2) === '$ge' || ($strict == false && strtolower($k2) === 'ge')){
-						$re[] = " `$k` >= '$v2' "; 
+						$re[] = self::_buildCol($k) . " >= '$v2' "; 
 	                }elseif(strtolower($k2) === '$lt' || ($strict == false && strtolower($k2) === 'lt')){
-						$re[] = " `$k` < '$v2' "; 
+						$re[] = self::_buildCol($k) . " < '$v2' "; 
 	                }elseif(strtolower($k2) === '$le' || ($strict == false && strtolower($k2) === 'le')){
-						$re[] = " `$k` <= '$v2' "; 
+						$re[] = self::_buildCol($k) . " <= '$v2' "; 
 	                }elseif(strtolower($k2) === '$ne' || ($strict == false && strtolower($k2) === 'ne')){
-						$re[] = " `$k` <> '$v2' "; 
+						$re[] = self::_buildCol($k) . " <> '$v2' "; 
 	                }else{
 	                	$re[] = self::_buildQuery($v, $trim, $strict, 'AND', $addslashes);
 	                }
                 }
             }else{
             	//简单条件
-                if($addslashes) $re[] = " `$k` = '" .addslashes($v). "' "; 
-                else $re[] = " `$k` = '$v' ";
+                if($addslashes) $re[] = self::_buildCol($k) . " = '" .addslashes($v). "' "; 
+                else $re[] = self::_buildCol($k) . " = '$v' ";
           	}
           	\Debug::log("_buildQuery: re", $re);
 		}
 		$result = implode($connector, $re);
 		return $result;
+	}
+	public static function _buildCol($col){
+		$t = explode('.', $col);
+		if(count($t) == 1)return " `$col`";
+		foreach($t as $k=> $v){
+			$t[$k] = "`$v`";
+		}
+		return ' ' . implode('.',$t);
 	}
 	
 	public function query_all($query){
