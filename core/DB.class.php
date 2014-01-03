@@ -279,6 +279,19 @@ class DB
 	}
 	
 	/**
+	 * @name fetchSclare
+	 * @desc 执行SQL语句并返回第一行第一列
+	 * @param string $sql 要执行的sql语句
+	 * @return mixed 
+	 * @access public
+	 */
+	public function fetchSclare($sql, $creteria = false, $trim = true, $strict = false)
+	{
+		$re = $this->fetchOne($sql, $creteria, $trim, $strict);
+		return array_shift($re);
+	}
+
+	/**
 	 * @name fetchAll
 	 * @desc 通过$sql获取全部数据
 	 * @desc 约定：使用$creteria时，$query中使用 select ... where %_creteria_% ...
