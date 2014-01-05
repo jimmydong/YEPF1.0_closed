@@ -191,10 +191,7 @@ class Debug
 			$caller = debug_backtrace(5);
 		}
 		if($results == ''){
-            if(is_string($label)){
-                $results = $GLOBALS[$label];
-		        array_push(self::$log_table, array($label, $results, $caller));
-            }else array_push(self::$log_table, array('-', $label, $caller));
+           array_push(self::$log_table, array('[临时调试]', $label, $caller));
         }else array_push(self::$log_table, array($label, $results, $caller));
 	}
 	/**
