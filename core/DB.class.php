@@ -141,12 +141,13 @@ class DB
 	 * @return rows affected
 	 * @access public
 	 */
-	public function insert($table_name, $info)
+	public function insert($table_name, $info, $addslashes = false)
 	{
 		$sql = "INSERT INTO ".$table_name." SET " ;
 		foreach ($info as $k => $v)
 		{
-			$sql .= '`'.$k . "` = '" . $v . "',";
+			if($addslashes) $sql .= '`'.$k . "` = '" . addslashes($v) . "',";
+			else $sql .= '`'.$k . "` = '" . $v . "',";
 		}
 		$sql = substr($sql, 0, -1);
 		return $this->exec($sql);
@@ -190,13 +191,14 @@ class DB
 	 * @return rows affected
 	 * @access public
 	 */
-	public function update($table_name, $info, $where , $trim = true, $strict = false)
+	public function update($table_name, $info, $where , $trim = true, $strict = false, $connector = 'AND', $addslashes = false)
 	{
-		if(is_array($where)) $where = self::_buildQuery($where, $trim, $strict);
+		if(is_array($where)) $where = self::_buildQuery($where, $trim, $strict, $connector, $addslashes);
 		$sql = "UPDATE ".$table_name." SET " ;
 		foreach ($info as $k => $v)
 		{
-			$sql .= '`'.$k . "` = '" . $v . "',";
+			if($addslashes)$sql .= '`'.$k . "` = '" . addslashes($v) . "',";
+			else $sql .= '`'.$k . "` = '" . $v . "',";
 		}
 		$sql = substr($sql, 0, -1);
 		$sql .= " WHERE " . $where ;
@@ -258,11 +260,11 @@ class DB
 	 * @param boolean $strim (参见 _buildWhere)
 	 * @param boolean $strict (参见 _buildWhere)
 	 **/
-	public function fetchOne($sql, $creteria = false, $trim = true, $strict = false)
+	public function fetchOne($sql, $creteria = false, $trim = true, $strict = false, $connector = 'AND', $addslashes = false)
 	{
 		$begin_microtime = Debug::getTime();
 		if($creteria){
-			$where = self::_buildQuery($creteria, $trim, $strict);
+			$where = self::_buildQuery($creteria, $trim, $strict, $connector, $addslashes);
 			$sql = str_replace('%_creteria_%', $where, $sql);
 		}
 		if(!$this->statement = $this->db->query($sql)){
@@ -281,9 +283,9 @@ class DB
 	 * @return mixed 
 	 * @access public
 	 */
-	public function fetchSclare($sql, $creteria = false, $trim = true, $strict = false)
+	public function fetchSclare($sql, $creteria = false, $trim = true, $strict = false, $connector = 'AND', $addslashes = false)
 	{
-		$re = $this->fetchOne($sql, $creteria, $trim, $strict);
+		$re = $this->fetchOne($sql, $creteria, $trim, $strict, $connector, $addslashes);
 		return array_shift($re);
 	}
 
@@ -297,11 +299,11 @@ class DB
 	 * @param boolean $strim (参见 _buildWhere)
 	 * @param boolean $strict (参见 _buildWhere)
 	 **/
-	public function fetchAll($sql, $creteria = false, $trim = true, $strict = false)
+	public function fetchAll($sql, $creteria = false, $trim = true, $strict = false, $connector = 'AND', $addslashes = false)
 	{
 		$begin_microtime = Debug::getTime();
 		if($creteria){
-			$where = self::_buildQuery($creteria, $trim, $strict);
+			$where = self::_buildQuery($creteria, $trim, $strict, $connector, $addslashes);
 			$sql = str_replace('%_creteria_%', $where, $sql);
 		}
 		if(! $this->statement = $this->db->query($sql)){
