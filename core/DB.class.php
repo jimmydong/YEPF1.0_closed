@@ -72,12 +72,6 @@ class DB
 		}
 	}
 
-  public function __call($name, $arguments) 
-  {
-  	\Debug::log("undefined function: $name", $arguments);
-  	return $this->db->$name($arguments);
-  }
-
 	/**
      * @name getInstance
      * @desc 单件模式调用DB类入口
@@ -228,8 +222,8 @@ class DB
 			$this->halt($e, $sql);
 			return false;
 		}
-		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $status);
-		return $status;
+		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $this->statement->errorInfo());
+		return $this->statement->errorCode();
 	}
 	
 	/**
@@ -388,7 +382,10 @@ class DB
 	 **/
 	public static function _buildQuery($creteria , $trim = true, $strict = false, $connector = 'AND', $addslashes = false){
 		if(self::debug)\Debug::log('_buildQuery', $creteria);
-        if(!is_array($creteria)){\Debug::log("_buildWhere Error", $creteria);return false;}
+        if(!is_array($creteria)){
+        	\Debug::log("_buildWhere Error", $creteria);
+        	return false;
+        }
 		$re = array();
 		foreach ($creteria as $k => $v){
             if($trim){$k = trim($k);}
@@ -447,5 +444,13 @@ class DB
 	public function fquery($query){
 		echo "$query";
 	}
+
+  public function __call($name, $arguments) 
+  {
+  	\Debug::log("undefined function: $name", $arguments);
+  	return $this->db->$name($arguments);
+  }
+	
+        
 }
 ?>
