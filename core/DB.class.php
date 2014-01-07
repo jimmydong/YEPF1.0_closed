@@ -223,7 +223,8 @@ class DB
 			return false;
 		}
 		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $this->statement->errorInfo());
-		return $this->statement->errorCode();
+		if($this->statement->errorCode() === '00000')return true;
+		else return false;
 	}
 	
 	/**
