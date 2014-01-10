@@ -178,7 +178,7 @@ class Debug
 	 * @return null
 	 * @access public
 	 */
-	static public function log($label, $results = '', $caller = '')
+	static public function log($label, $results = null, $caller = '')
 	{
 		if(false === self::$open || (defined('DEBUG_SHOW_LOG') && !DEBUG_SHOW_LOG))
 		{
@@ -190,7 +190,7 @@ class Debug
 		}elseif($caller == 'full'){
 			$caller = debug_backtrace(5);
 		}
-		if($results == ''){
+		if($results === null){
            array_push(self::$log_table, array('[临时调试]', $label, $caller));
         }else array_push(self::$log_table, array($label, $results, $caller));
 	}
