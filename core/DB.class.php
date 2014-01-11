@@ -342,11 +342,8 @@ class DB
 	public function err($sql = '')
 	{
 		$t = $this->getError();
+		throw new Exception($t[2]);
 		Debug::db($this->db_host, $this->db_name, $sql, 'Mysql Errno: ' . $t[0], 'Mysql Error:' . $t[2]);
-		if(Debug::$open)
-		{
-			die(nl2br("Error: " . $sql . "\n" . $t[2]));
-		}
 	}
 		
 	/**
