@@ -146,10 +146,10 @@ class DB
 		$sql = "INSERT INTO ".$table_name." SET " ;
 		foreach ($info as $k => $v)
 		{
-			if($addslashes) $sql .= '`'.$k . "` = '" . addslashes($v) . "',";
-			else $sql .= '`'.$k . "` = '" . $v . "',";
+			if($addslashes) $s .= '`'.$k . "` = '" . addslashes($v) . "',";
+			else $s .= '`'.$k . "` = '" . $v . "',";
 		}
-		$sql = substr($sql, 0, -1);
+		$sql = substr($s, 0, -1);
 		return $this->exec($sql);
 	}
 
@@ -197,10 +197,10 @@ class DB
 		$sql = "UPDATE ".$table_name." SET " ;
 		foreach ($info as $k => $v)
 		{
-			if($addslashes)$sql .= '`'.$k . "` = '" . addslashes($v) . "',";
-			else $sql .= '`'.$k . "` = '" . $v . "',";
+			if($addslashes)$s .= '`'.$k . "` = '" . addslashes($v) . "',";
+			else $s .= '`'.$k . "` = '" . $v . "',";
 		}
-		$sql = substr($sql, 0, -1);
+		$sql .= substr($s, 0, -1);
 		$sql .= " WHERE " . $where ;
 		return $this->exec($sql);
 	}
