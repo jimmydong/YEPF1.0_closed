@@ -209,10 +209,11 @@ class DB
 	 * @name query
 	 * @desc 执行一条SQL语句，得到Statement
 	 * @param string $sql 要执行的sql语句
+	 * @param boolean $return_statment 兼容mysql返回true/false OR  PDO模式返回statment
 	 * @return resource
 	 * @access public
 	 **/
-	public function query($sql)
+	public function query($sql, $return_statment=false)
 	{
 		$begin_microtime = Debug::getTime();
 		try 
@@ -225,6 +226,7 @@ class DB
 			return false;
 		}
 		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $this->statement->errorInfo());
+		if($return_statment) return $this->statment;
 		if($this->statement->errorCode() === '00000')return true;
 		else return false;
 	}
