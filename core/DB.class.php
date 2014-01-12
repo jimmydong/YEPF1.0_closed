@@ -447,12 +447,48 @@ class DB
 		echo "$query";
 	}
 
-  public function __call($name, $arguments) 
+    // 开始一个事务
+    public function beginTransaction() {
+        return $this->db->beginTransaction();
+    }
+
+    // 提交一个事务
+    public function commit() {
+        return $this->db->commit();
+    }
+
+    // 开始一个事物
+    public function rollBack() {
+        return $this->db->rollBack();
+    }
+	
+  /**
+   * 直接调用未定义的PDO方法
+   * Enter description here ...
+   * @param unknown_type $method
+   * @param unknown_type $args
+   */
+  public function __call($method, $args) 
   {
+		$begin_microtime = Debug::getTime();
+		switch(count($args)){
+			case 0: $returnValue = $this->db->$method();break;
+			case 1: $returnValue = $this->db->$method($args[0]);break;
+			case 2: $returnValue = $this->db->$method($args[0],$args[1]);break;
+			case 3: $returnValue = $this->db->$method($args[0],$args[1],$args[2]);break;
+			case 4: $returnValue = $this->db->$method($args[0],$args[1],$args[2],$args[3]);break;
+			case 5: $returnValue = $this->db->$method($args[0],$args[1],$args[2],$args[3],$args[4]);break;
+			default: 
+				\Debug::log('Error DB: too many args', $args);
+				break;
+		}
+		Debug::db($this->db_host, $this->db_name, $args, Debug::getTime() - $begin_microtime, $returnValue);
+        return $returnValue;
+  	
   	\Debug::log("undefined function: $name", $arguments);
   	return $this->db->$name($arguments);
   }
-	
+
         
 }
 ?>
