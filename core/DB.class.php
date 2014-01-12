@@ -149,7 +149,7 @@ class DB
 			if($addslashes) $s .= '`'.$k . "` = '" . addslashes($v) . "',";
 			else $s .= '`'.$k . "` = '" . $v . "',";
 		}
-		$sql = substr($s, 0, -1);
+		$sql .= substr($s, 0, -1);
 		return $this->exec($sql);
 	}
 
@@ -488,7 +488,6 @@ class DB
   	\Debug::log("undefined function: $name", $arguments);
   	return $this->db->$name($arguments);
   }
-
         
 }
 ?>
