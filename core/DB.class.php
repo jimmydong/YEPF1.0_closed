@@ -452,6 +452,21 @@ class DB
   	\Debug::log("undefined function: $name", $arguments);
   	return $this->db->$name($arguments);
   }
+
+  // 开始一个事务
+  public function beginTransaction() {
+      return parent::beginTransaction();
+  }
+
+  // 提交一个事务
+  public function commit() {
+      return parent::commit();
+  }
+
+  // 回滚
+  public function rollBack() {
+      return parent::rollBack();
+  }
 	
         
 }
