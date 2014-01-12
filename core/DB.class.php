@@ -455,17 +455,17 @@ class DB
 
   // 开始一个事务
   public function beginTransaction() {
-      return parent::beginTransaction();
+      return $this->db->beginTransaction();
   }
 
   // 提交一个事务
   public function commit() {
-      return parent::commit();
+      return $this->db->commit();
   }
 
   // 回滚
   public function rollBack() {
-      return parent::rollBack();
+      return $this->db->rollBack();
   }
 	
         
