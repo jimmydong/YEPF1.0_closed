@@ -123,7 +123,7 @@ class Cache implements CacheInterface
         	Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, 'set');
             return true;
         }
-        Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, 'set');
+        Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, $cacheValue, 'set');
         return false;
     }
     /**
@@ -173,7 +173,7 @@ class Cache implements CacheInterface
         	}
             else $returnValue = $cacheValue;
         }
-        Debug::cache($this->serverlist, $key, Debug::getTime() - $begin_microtime, $returnValue);
+        Debug::cache($this->serverlist, $key, Debug::getTime() - $begin_microtime, $returnValue, 'get');
         return $returnValue;
     }
 	
