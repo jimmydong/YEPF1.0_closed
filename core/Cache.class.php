@@ -120,10 +120,10 @@ class Cache implements CacheInterface
     	if(method_exists($this->cache, 'fetch')) $re = $this->cache->set($cacheKey, $cacheValue, $lifetime);
     	else $re = $this->cache->set($cacheKey, $cacheValue, 0, $lifetime);
         if($re){
-        	Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, 'set');
+        	Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, $cacheValue, 'set');
             return true;
         }
-        Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, $cacheValue, 'set');
+        Debug::cache($this->serverlist, $cacheKey, Debug::getTime() - $begin_microtime, 'false', 'set');
         return false;
     }
     /**
