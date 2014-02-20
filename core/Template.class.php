@@ -45,6 +45,9 @@ class Template extends Smarty
 		if(function_exists('template_nicenumber_encode')){
 			$this->register_function('nicenumber','template_nicenumber_encode');
 		}
+		if(function_exists('template_mobile_encode')){
+			$this->register_function('mobile','template_mobile_encode');
+		}
 		if(class_exists('\\Debug')){
 			if(\Debug::$open) $this->error_reporting = E_ALL & ~E_NOTICE;
 		}
