@@ -48,6 +48,15 @@ class Template extends Smarty
 		if(function_exists('template_mobile_encode')){
 			$this->register_function('mobile','template_mobile_encode');
 		}
+
+        if(function_exists('template_jsversion_encode')){
+			$this->register_function('jsversion','template_jsversion_encode');
+		}
+
+        if(function_exists('template_cssversion_encode')){
+			$this->register_function('cssversion','template_cssversion_encode');
+		}
+
 		if(class_exists('\\Debug')){
 			if(\Debug::$open) $this->error_reporting = E_ALL & ~E_NOTICE;
 		}
