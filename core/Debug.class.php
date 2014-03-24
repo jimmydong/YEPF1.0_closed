@@ -12,7 +12,8 @@
  *	Debug::stop(); Debug::restart();
  *	//注册shutdown函数用来Debug显示
  *	register_shutdown_function(array('Debug', 'show'));
- * @todo
+ * @update by jimmy.dong@gmail.com
+ *  增加db记录开关，用于记录数据库修改操作
  */
 if(!defined('YOKA')) exit('Illegal Request');
 
@@ -55,6 +56,7 @@ class Debug
 	 * @var array
 	 */
 	static $db_table = array();
+	static $db_log	 = false;		//记录数据库操作（insert/update/delete）到文件 
 	/**
 	 * @desc 缓存查询执行时间数组
 	 * @var array
@@ -141,6 +143,16 @@ class Debug
 	static public function restart(){
 		self::$open = true;
 	}
+	
+	/**
+	 * 启动或关闭数据库日志(默认为关闭)
+	 * 开启 - true
+	 * 关闭 - false
+	 */
+	static public function db_log($flag){
+		self::$db_log = $flag;
+	}
+	
 	/**
 	 * @name getTime
 	 * @desc 获得从起始时间到目前为止所花费的时间
@@ -634,8 +646,24 @@ class Debug
 			default:
 				break;
 		}
+		/*---------记录数据库改变情况-------------------------*/
+		if(self::db_log){
+			$string = '';
+			if(!empty(self::$db_table))
+			{
+				foreach (self::$log_table as $v)
+				{
+					if(preg_match('/insert|update|delete/i',$v[3])) $string .= "|----  ".$v[1]."  ".$v[2]."  ".$v[3]."  ".$v[4]."  ----|\n";
+				}
+				if($string){
+					$filename = "debug_db_" . date("Ymd") . ".log";
+					Log::customLog($filename, $string);
+				}
+			}				
+		}
+		
 
-		/*---------记录至日记文件中------------*/
+		/*---------记录用户定制调试信息至日志文件中------------*/
 		if(self::$debug_level == self::YEPF_DEBUG_NONE || self::$debug_level == self::YEPF_DEBUG_WARNING || self::$debug_level == self::YEPF_DEBUG_STAT)
 		if(false !== self::$open &&(count(self::$log_table) > 1 || count(self::$time_table) > 1))
 		{
