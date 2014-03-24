@@ -647,7 +647,7 @@ class Debug
 				break;
 		}
 		/*---------记录数据库改变情况-------------------------*/
-		if(self::db_log){
+		if(self::$db_log){
 			$string = '';
 			if(!empty(self::$db_table))
 			{
