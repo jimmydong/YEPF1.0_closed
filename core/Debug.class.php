@@ -149,7 +149,7 @@ class Debug
 	 * 开启 - true
 	 * 关闭 - false
 	 */
-	static public function db_log($flag){
+	static public function log_db($flag){
 		self::$db_log = $flag;
 	}
 	
