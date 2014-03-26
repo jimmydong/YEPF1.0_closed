@@ -656,6 +656,9 @@ class Debug
 					if(preg_match('/insert|update|delete/i',$v[3])) $string .= "|----  ".$v[1]."  ".$v[2]."  ".$v[3]."  ".$v[4]."  ----|\n";
 				}
 				if($string){
+					$t = debug_backtrace(1);
+					$caller = $t[0][file].':'.$t[0][line];
+					$string = 	"Request: " . $_SERVER['REQUEST_URI'] . "\nCalled in ". $caller . "\n" . $string;
 					$filename = "debug_db_" . date("Ymd") . ".log";
 					Log::customLog($filename, $string);
 				}
