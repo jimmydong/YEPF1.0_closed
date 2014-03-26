@@ -651,7 +651,7 @@ class Debug
 			$string = '';
 			if(!empty(self::$db_table))
 			{
-				foreach (self::$log_table as $v)
+				foreach (self::$db_table as $v)
 				{
 					if(preg_match('/insert|update|delete/i',$v[3])) $string .= "|----  ".$v[1]."  ".$v[2]."  ".$v[3]."  ".$v[4]."  ----|\n";
 				}
