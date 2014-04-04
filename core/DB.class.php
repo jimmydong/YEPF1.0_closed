@@ -225,7 +225,7 @@ class DB
 			$this->halt($e, $sql);
 			return false;
 		}
-		Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $this->statement->errorInfo());
+		\Debug::db($this->db_host, $this->db_name, $sql, Debug::getTime() - $begin_microtime, $this->db->errorInfo());
 		if($return_statement) return $this->statement;
 		if($this->statement->errorCode() === '00000')return true;
 		else return false;
