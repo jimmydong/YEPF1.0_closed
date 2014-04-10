@@ -16,18 +16,29 @@ class Template extends Smarty
 
 	private $tpl_type ;  //静态文件的类型
 	private $directory;  //模板子目录
-	public function __construct($directory = '')
+	public function __construct($directory = 'default')
 	{
+		//定义定界符
 		$this->left_delimiter = "<{";
 		$this->right_delimiter = "}>";
+		
+		//定义模板目录
 		$this->directory = $directory;
-		$this->template_dir = getCustomConstants('TEMPLATE_PATH');
-		$this->compile_dir = getCustomConstants('COMPILER_PATH');
+		if($directory == ''){
+			$this->template_dir = getCustomConstants('TEMPLATE_PATH');
+			$this->compile_dir = getCustomConstants('COMPILER_PATH');
+		}else{
+			$this->template_dir = getCustomConstants('TEMPLATE_PATH') . DIRECTORY_SEPARATOR . $directory;
+			$this->compile_dir = getCustomConstants('COMPILER_PATH') . DIRECTORY_SEPARATOR . $directory;
+		}
+		if(!file_exists($this->template_dir))mkdir($this->template_dir);
+		if(!file_exists($this->compile_dir))mkdir($this->compile_dir);
+		
 		$this->cache_dir = getCustomConstants('COMPILER_PATH');
 		$this->tpl_type = getCustomConstants('TEMPLATE_TYPE');
-		
+
+		//注册静态化函数
 		if(function_exists('template_url_encode')){
-			//注册地址静态化转换函数
 			$this->register_function('url','template_url_encode');
 		}
 		if(function_exists('template_thumb_encode')){
@@ -52,7 +63,6 @@ class Template extends Smarty
         if(function_exists('template_jsversion_encode')){
 			$this->register_function('jsversion','template_jsversion_encode');
 		}
-
         if(function_exists('template_cssversion_encode')){
 			$this->register_function('cssversion','template_cssversion_encode');
 		}
