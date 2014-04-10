@@ -120,8 +120,15 @@ class Template extends Smarty
 	public function layout($layout, $resource, $cache_id = null, $compile_id = null, $display = false)
 	{
 		global $CFG, $YOKA, $TEMPLATE, $DEFINE ;
-		$this->template_dir = getCustomConstants('TEMPLATE_PATH');
-		$this->compile_dir = getCustomConstants('COMPILER_PATH');
+		$directory = $this->directory;
+		if($directory == ''){
+			$this->template_dir = getCustomConstants('TEMPLATE_PATH');
+			$this->compile_dir = getCustomConstants('COMPILER_PATH');
+		}else{
+			$this->template_dir = getCustomConstants('TEMPLATE_PATH') . DIRECTORY_SEPARATOR . $directory;
+			$this->compile_dir = getCustomConstants('COMPILER_PATH') . DIRECTORY_SEPARATOR . $directory;
+		}
+		
 		$this->cache_dir = getCustomConstants('COMPILER_PATH');
 		$this->tpl_type = getCustomConstants('TEMPLATE_TYPE');
 		$this->assign('CFG', $CFG);
