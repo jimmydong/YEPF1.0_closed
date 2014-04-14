@@ -31,7 +31,6 @@ class Template extends Smarty
 			$this->template_dir = getCustomConstants('TEMPLATE_PATH') . DIRECTORY_SEPARATOR . $directory;
 			$this->compile_dir = getCustomConstants('COMPILER_PATH') . DIRECTORY_SEPARATOR . $directory;
 		}
-		if(!file_exists($this->template_dir))mkdir($this->template_dir);
 		if(!file_exists($this->compile_dir))mkdir($this->compile_dir);
 		
 		$this->cache_dir = getCustomConstants('COMPILER_PATH');
@@ -128,6 +127,7 @@ class Template extends Smarty
 			$this->template_dir = getCustomConstants('TEMPLATE_PATH') . DIRECTORY_SEPARATOR . $directory;
 			$this->compile_dir = getCustomConstants('COMPILER_PATH') . DIRECTORY_SEPARATOR . $directory;
 		}
+		if(!file_exists($this->compile_dir))mkdir($this->compile_dir);
 		
 		$this->cache_dir = getCustomConstants('COMPILER_PATH');
 		$this->tpl_type = getCustomConstants('TEMPLATE_TYPE');
