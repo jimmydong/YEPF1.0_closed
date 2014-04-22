@@ -18,6 +18,8 @@ class Template extends Smarty
 	private $directory;  //模板子目录
 	public function __construct($directory = 'default')
 	{
+        parent::__construct();
+
 		//定义定界符
 		$this->left_delimiter = "<{";
 		$this->right_delimiter = "}>";
@@ -25,46 +27,46 @@ class Template extends Smarty
 		//定义模板目录
 		$this->directory = $directory;
 		if($directory == ''){
-			$this->template_dir = getCustomConstants('TEMPLATE_PATH');
-			$this->compile_dir = getCustomConstants('COMPILER_PATH');
+			$this->setTemplateDir(getCustomConstants('TEMPLATE_PATH'));
+			$this->setCompileDir(getCustomConstants('COMPILER_PATH'));
 		}else{
-			$this->template_dir = getCustomConstants('TEMPLATE_PATH') . DIRECTORY_SEPARATOR . $directory;
-			$this->compile_dir = getCustomConstants('COMPILER_PATH') . DIRECTORY_SEPARATOR . $directory;
+			$this->setTemplateDir(getCustomConstants('TEMPLATE_PATH') . DIRECTORY_SEPARATOR . $directory);
+			$this->setCompileDir(getCustomConstants('COMPILER_PATH') . DIRECTORY_SEPARATOR . $directory);
 		}
-		if(!file_exists($this->template_dir))mkdir($this->template_dir);
-		if(!file_exists($this->compile_dir))mkdir($this->compile_dir);
+		//if(!file_exists($this->template_dir))mkdir($this->template_dir);
+		//if(!file_exists($this->compile_dir))mkdir($this->compile_dir);
 		
-		$this->cache_dir = getCustomConstants('COMPILER_PATH');
+		$this->setCacheDir(getCustomConstants('COMPILER_PATH'));
 		$this->tpl_type = getCustomConstants('TEMPLATE_TYPE');
 
 		//注册静态化函数
 		if(function_exists('template_url_encode')){
-			$this->register_function('url','template_url_encode');
+			$this->registerPlugin('function', 'url', 'template_url_encode');
 		}
 		if(function_exists('template_thumb_encode')){
-			$this->register_function('thumb','template_thumb_encode');
+			$this->registerPlugin('function', 'thumb', 'template_thumb_encode');
 		}
 		if(function_exists('template_widget_encode')){
-			$this->register_function('widget','template_widget_encode');
+			$this->registerPlugin('function', 'widget', 'template_widget_encode');
 		}
 		if(function_exists('template_nicetime_encode')){
-			$this->register_function('nicetime','template_nicetime_encode');
+			$this->registerPlugin('function', 'nicetime', 'template_nicetime_encode');
 		}
 		if(function_exists('template_cutstr_encode')){
-			$this->register_function('cutstr','template_cutstr_encode');
+			$this->registerPlugin('function', 'cutstr', 'template_cutstr_encode');
 		}
 		if(function_exists('template_nicenumber_encode')){
-			$this->register_function('nicenumber','template_nicenumber_encode');
+			$this->registerPlugin('function', 'nicenumber', 'template_nicenumber_encode');
 		}
 		if(function_exists('template_mobile_encode')){
-			$this->register_function('mobile','template_mobile_encode');
+			$this->registerPlugin('function', 'mobile', 'template_mobile_encode');
 		}
 
         if(function_exists('template_jsversion_encode')){
-			$this->register_function('jsversion','template_jsversion_encode');
+			$this->registerPlugin('function', 'jsversion', 'template_jsversion_encode');
 		}
         if(function_exists('template_cssversion_encode')){
-			$this->register_function('cssversion','template_cssversion_encode');
+			$this->registerPlugin('function', 'cssversion', 'template_cssversion_encode');
 		}
 
 		if(class_exists('\\Debug')){
@@ -96,8 +98,8 @@ class Template extends Smarty
 			$caller = $t[0]['file'].':'.$t[0]['line'];
 			\Debug::template($resource_name, Debug::getTime() - $begin_microtime, $caller);
 		}
-		if($this->debugging)return $this->display($resource_name.".".$this->tpl_type, $cache_id, $compile_id);
-        return $this->fetch($resource_name.".".$this->tpl_type, $cache_id , $compile_id , $display);
+		if($this->debugging || $display)return $this->display($resource_name.".".$this->tpl_type, $cache_id, $compile_id);
+        return $this->fetch($resource_name.".".$this->tpl_type, $cache_id , $compile_id);
 	}
 	/**
 	 * @name fix_sprite
@@ -140,8 +142,8 @@ class Template extends Smarty
 				$this->assign($key, $val.".".$this->tpl_type);
 			}
 		}else $this->assign('LAYOUT_CONTENT', $resource.".".$this->tpl_type);
-		if($this->debugging)return $this->display("layout/".$layout.".".$this->tpl_type, $cache_id, $compile_id);
-		return $this->fetch("layout/".$layout.".".$this->tpl_type, $cache_id , $compile_id , $display);
+		if($this->debugging || $display)return $this->display("layout/".$layout.".".$this->tpl_type, $cache_id, $compile_id);
+		return $this->fetch("layout/".$layout.".".$this->tpl_type, $cache_id , $compile_id);
 	}
 	
 
