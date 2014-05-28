@@ -89,7 +89,7 @@ class Utilyty
 	 */
 	public static function validMobile($mobile)
 	{
-		if(!preg_match('/^[1]{1}[3|5|8]{1}[0-9]{9}$/', $mobile))
+		if(!preg_match('/^[1]{1}[3|5|7|8]{1}[0-9]{9}$/', $mobile))
 		{
 			return false;
 		}
