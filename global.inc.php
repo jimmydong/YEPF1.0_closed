@@ -84,7 +84,10 @@ class YEPFCore {
       		 */
 			$class_name = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
         	$class_path = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $class_name.'.class.php';
-   
+	     //Ubuntu 系统下队路径大小写敏感
+	     $class_name_tolower = strtolower(str_replace('\\', DIRECTORY_SEPARATOR, $class_name));
+             $class_path_tolower = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $class_name_tolower.'.class.php';
+        	
             //\Debug::log('autoload:'. $class_name, $class_path);
             if(file_exists($class_path)) {
         		return include_once($class_path);
