@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * 兼容YEPF1.0框架代码，同时依赖老版的框架代码目录 /YOKA/HTML/_YEPF
  * @name global.inc.php
@@ -67,6 +67,10 @@ class YEPFCore {
         $ext_classarray = array('ext/HtmlFilter', 'ext/Page', 'ext/Rank', 'ext/ServicesJson', 'ext/TidyFilter', 'ext/ZhuYin', 'ext/Keyword', 'ext/IpLocation', 'ext/Province', 'ext/SysPager', 'ext/YinHooMail', 'ext/ParseEnvConf');
 		//YOKA特有类数组
 		$yoka_classarray = array('yoka/User', 'yoka/YokaServiceUtility', 'yoka/YokaService', 'yoka/SearchEngine', 'yoka/YokaMail', 'yoka/YokaCookie','yoka/YokaMobileMessage','yoka/IntegralMoneyService');
+		//旧版YEPF系统扩展数组
+        $old_ext_classarray = array('HtmlFilter', 'Page', 'Rank', 'ServicesJson', 'TidyFilter', 'ZhuYin', 'Keyword', 'IpLocation', 'Province', 'SysPager', 'YinHooMail', 'ParseEnvConf');
+		//旧版YOKA特有类数组
+		$old_yoka_classarray = array('User', 'YokaServiceUtility', 'YokaService', 'SearchEngine', 'YokaMail', 'YokaCookie','YokaMobileMessage','IntegralMoneyService');
         if(in_array($class_name, $core_classarray))
         {
             return include YEPF_PATH . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR .$class_name.'.class.php';
@@ -75,36 +79,47 @@ class YEPFCore {
 		{
 			return include YEPF_PATH . DIRECTORY_SEPARATOR . $class_name.'.class.php';
 		}
+		elseif(in_array($class_name, $old_yoka_classarray))
+        {
+            return include YEPF_PATH_OLD . DIRECTORY_SEPARATOR . 'YOKA_CLASS' . DIRECTORY_SEPARATOR .$class_name.'.class.php';
+        }
+		elseif (in_array($class_name, $old_ext_classarray))
+		{
+			return include YEPF_PATH_OLD . DIRECTORY_SEPARATOR . 'CLASS' . DIRECTORY_SEPARATOR .$class_name.'.class.php';
+        }
 		elseif(defined('CUSTOM_CLASS_PATH'))
         {
-     		/**
+      		/**
       		 * update by jimmy.dong@gmail.com
       		 * 支援命名空间, 支援驼峰规则
       		 * 注意： 目录需按首字母大写
       		 */
 			$class_name = str_replace('\\', DIRECTORY_SEPARATOR, $class_name);
         	$class_path = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $class_name.'.class.php';
-	     //Ubuntu 系统下队路径大小写敏感
-	     $class_name_tolower = strtolower(str_replace('\\', DIRECTORY_SEPARATOR, $class_name));
-             $class_path_tolower = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $class_name_tolower.'.class.php';
-        	
-            //\Debug::log('autoload:'. $class_name, $class_path);
-            if(file_exists($class_path)) {
+
+    		if(file_exists($class_path)) {
         		return include_once($class_path);
-        	}else{
-        		//支援将驼峰转变为目录结构
-        		$lastdspos = strripos($class_name, DIRECTORY_SEPARATOR);
-        		if(false !== $lastdspos){
-	        		$prepath = substr($class_name, 0, $lastdspos+1); 
-		      		$rlname = substr($class_name, $lastdspos+1);
-				}else{
-					$prepath = '';
-					$rlname = $class_name;
-				}
-        		$result = preg_replace_callback('/[A-Z][^A-Z]+/','YEPFCore::my_callback',substr($rlname,1));
-				$class_path = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $prepath . substr($rlname,0,1) . $result .'.class.php';
-                if(file_exists($class_path))return include_once($class_path);
-        	}
+        	} else
+            {
+                $class_name_tolower = strtolower(str_replace('\\', DIRECTORY_SEPARATOR, $class_name));
+                $class_path_tolower = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $class_name_tolower.'.class.php';
+                if (file_exists($class_path_tolower)) {
+        		    return include_once($class_path_tolower);
+                } else{
+                    //支援将驼峰转变为目录结构
+                    $lastdspos = strripos($class_name, DIRECTORY_SEPARATOR);
+                    if(false !== $lastdspos){
+                        $prepath = substr($class_name, 0, $lastdspos+1);
+                        $rlname = substr($class_name, $lastdspos+1);
+                    }else{
+                        $prepath = '';
+                        $rlname = $class_name;
+                    }
+                    $result = preg_replace_callback('/[A-Z][^A-Z]+/','YEPFCore::my_callback',substr($rlname,1));
+                    $class_path = getCustomConstants('CUSTOM_CLASS_PATH') . DIRECTORY_SEPARATOR . $prepath . substr($rlname,0,1) . $result .'.class.php';
+                    if(file_exists($class_path))return include_once($class_path);
+                }
+            }
           }
         return false;
     }
